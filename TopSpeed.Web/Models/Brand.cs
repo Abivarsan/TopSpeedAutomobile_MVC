@@ -7,7 +7,8 @@ namespace TopSpeed.Web.Models
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Brand name is required.")]
+        [StringLength(100, ErrorMessage = "Brand name cannot exceed 100 characters.")]
         public string Name { get; set; }
 
         [Display(Name= "Established Year")]

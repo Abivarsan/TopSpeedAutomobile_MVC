@@ -12,8 +12,8 @@ using TopSpeed.Web.Data;
 namespace TopSpeed.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241013194924_inital")]
-    partial class inital
+    [Migration("20241015113614_intial2")]
+    partial class intial2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,11 +40,12 @@ namespace TopSpeed.Web.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brand");
                 });
 #pragma warning restore 612, 618
         }
