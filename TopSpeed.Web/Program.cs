@@ -66,4 +66,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();  // Required if using Identity UI or Razor Pages for authentication
 
+// Initialize and seed database roles and catalog data
+await DbInitializer.SeedAsync(app.Services);
+
 app.Run();

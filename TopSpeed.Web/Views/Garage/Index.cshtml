@@ -1,0 +1,140 @@
+@model List<UserGarageItem>
+@{
+    ViewData["Title"] = "My Virtual Garage";
+    int totalHp = ViewBag.TotalHorsepower ?? 0;
+    decimal totalVal = ViewBag.TotalValue ?? 0m;
+    int maxSpd = ViewBag.MaxSpeed ?? 0;
+    double avg0To100 = ViewBag.Avg0To100 ?? 0;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25 gap-3">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h2 class="mb-0 fw-bold">My Virtual Garage</h2>
+            <span class="badge bg-danger rounded-pill px-3 py-1">@Model.Count Cars Saved</span>
+        </div>
+        <p class="text-muted mb-0 small">Your curated dream collection and aggregated fleet metrics.</p>
+    </div>
+    <div>
+        <a asp-controller="Vehicle" asp-action="Index" class="btn btn-speed">
+            <i class="bi bi-plus-circle"></i> Add More Cars
+        </a>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <!-- Fleet Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">@Model.Count</div>
+                <div class="stat-label">Saved Vehicles</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">@totalHp.ToString("N0") <span style="font-size: 1rem; color: var(--speed-red);">HP</span></div>
+                <div class="stat-label">Combined Horsepower</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">@maxSpd <span style="font-size: 1rem; color: #06b6d4;">km/h</span></div>
+                <div class="stat-label">Peak Top Speed</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">$@((totalVal / 1000m).ToString("N0"))K</div>
+                <div class="stat-label">Total Fleet Value</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Grid -->
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            var v = item.Vehicle;
+            if (v == null) continue;
+
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card glass-card-hover h-100 d-flex flex-column position-relative">
+                    <div style="height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(11,15,23,0.98) 100%); position: relative; overflow: hidden;">
+                        @if (!string.IsNullOrEmpty(v.ImageUrl))
+                        {
+                            <img src="@v.ImageUrl" alt="@v.Name" class="w-100 h-100" style="object-fit: cover;" 
+                                 onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                        }
+                        else
+                        {
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted"><i class="bi bi-car-front" style="font-size: 4rem;"></i></div>
+                        }
+
+                        <span class="badge bg-dark bg-opacity-75 text-white border border-secondary border-opacity-50 position-absolute top-0 start-0 m-3 rounded-pill px-3 py-1 small">
+                            @v.VehicleType
+                        </span>
+
+                        <form asp-controller="Garage" asp-action="Remove" asp-route-id="@item.Id" method="post" class="position-absolute top-0 end-0 m-3">
+                            <button type="submit" class="btn btn-sm btn-danger rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Remove from garage">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                        <div class="small text-danger fw-bold text-uppercase">@v.Brand?.Name</div>
+                        <h4 class="fw-bold text-white mb-2">@v.Name</h4>
+
+                        <div class="p-2 mb-3 rounded-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);">
+                            <div class="row text-center g-2 small">
+                                <div class="col-4 border-end border-secondary border-opacity-25">
+                                    <div class="fw-bold text-white">@v.Horsepower HP</div>
+                                </div>
+                                <div class="col-4 border-end border-secondary border-opacity-25">
+                                    <div class="fw-bold text-white">@v.Acceleration s</div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="fw-bold text-white">@v.TopSpeed km/h</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="small text-muted">MSRP Value:</span>
+                            <span class="fw-bold text-white fs-6">$@v.Price.ToString("N0")</span>
+                        </div>
+
+                        <div class="mt-auto d-flex gap-2">
+                            <a asp-controller="Vehicle" asp-action="Details" asp-route-id="@v.Id" class="btn btn-speed-outline flex-grow-1">
+                                View Specs
+                            </a>
+                            <a asp-controller="Inquiry" asp-action="Book" asp-route-vehicleId="@v.Id" class="btn btn-speed" title="Book Test Drive">
+                                <i class="bi bi-calendar-check"></i>
+                            </a>
+                            <a asp-controller="Vehicle" asp-action="Compare" asp-route-v1="@v.Id" class="btn btn-glass" title="Compare">
+                                <i class="bi bi-shuffle"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state-card my-5">
+        <div class="empty-state-icon" style="background: rgba(239, 68, 68, 0.15); color: var(--speed-red);">
+            <i class="bi bi-heart"></i>
+        </div>
+        <h3 class="fw-bold mb-2">Your Virtual Garage is Empty</h3>
+        <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
+            Explore the performance showroom and click the heart icon on any hypercar or supercar to save it into your personal dream collection.
+        </p>
+        <a asp-controller="Vehicle" asp-action="Index" class="btn btn-speed btn-lg">
+            <i class="bi bi-speedometer2 me-1"></i> Browse Showroom
+        </a>
+    </div>
+}

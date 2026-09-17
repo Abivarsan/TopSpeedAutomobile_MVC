@@ -1,0 +1,267 @@
+@{
+    ViewData["Title"] = "Head-to-Head Spec Battle";
+    var v1 = ViewBag.Vehicle1 as Vehicle;
+    var v2 = ViewBag.Vehicle2 as Vehicle;
+    var selectList = ViewBag.VehicleSelectList as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<div class="mb-4 pb-2 border-bottom border-secondary border-opacity-25 text-center">
+    <div class="hero-tag mx-auto mb-2">
+        <i class="bi bi-lightning-charge-fill text-warning"></i> Head-to-Head Performance Duel
+    </div>
+    <h1 class="display-5 fw-bold mb-2">Spec <span class="text-gradient">Battle</span></h1>
+    <p class="text-muted small mx-auto mb-0" style="max-width: 550px;">
+        Pick any two performance vehicles from our catalog to compare horsepower, acceleration, top speed, and engineering side-by-side.
+    </p>
+</div>
+
+<!-- Vehicle Selectors Bar -->
+<div class="glass-card p-4 mb-4">
+    <form method="get" class="row g-3 align-items-center justify-content-center">
+        <div class="col-md-5">
+            <label class="form-label small text-muted text-uppercase fw-bold"><i class="bi bi-car-front text-danger me-1"></i> Contender 1:</label>
+            <select name="v1" class="form-select" onchange="this.form.submit()">
+                @foreach (var item in selectList)
+                {
+                    <option value="@item.Value" selected="@(v1 != null && v1.Id.ToString() == item.Value)">
+                        @item.Text
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2 text-center pt-md-3">
+            <div class="user-avatar-circle mx-auto" style="width: 44px; height: 44px; font-size: 1rem; background: var(--gradient-speed); box-shadow: var(--shadow-glow);">
+                VS
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <label class="form-label small text-muted text-uppercase fw-bold"><i class="bi bi-car-front text-cyan me-1" style="color: #06b6d4;"></i> Contender 2:</label>
+            <select name="v2" class="form-select" onchange="this.form.submit()">
+                @foreach (var item in selectList)
+                {
+                    <option value="@item.Value" selected="@(v2 != null && v2.Id.ToString() == item.Value)">
+                        @item.Text
+                    </option>
+                }
+            </select>
+        </div>
+    </form>
+</div>
+
+@if (v1 != null && v2 != null)
+{
+    <!-- Contender Cards Showcase -->
+    <div class="row g-4 mb-4">
+        <!-- Car 1 Card -->
+        <div class="col-md-6">
+            <div class="glass-card p-4 h-100 text-center border-danger border-opacity-25" style="background: radial-gradient(circle at 10% 10%, rgba(239, 68, 68, 0.08) 0%, rgba(17, 24, 39, 0.9) 100%);">
+                <div style="height: 190px; overflow: hidden; border-radius: 12px; background: #000; margin-bottom: 1.25rem;">
+                    @if (!string.IsNullOrEmpty(v1.ImageUrl))
+                    {
+                        <img src="@v1.ImageUrl" alt="@v1.Name" class="w-100 h-100" style="object-fit: cover;" 
+                             onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                    }
+                    else
+                    {
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted"><i class="bi bi-car-front" style="font-size: 4rem;"></i></div>
+                    }
+                </div>
+                <div class="small text-danger fw-bold text-uppercase">@v1.Brand?.Name</div>
+                <h3 class="fw-bold text-white mb-1">@v1.Name</h3>
+                <div class="badge bg-dark border border-secondary text-muted rounded-pill px-3 py-1 mb-2">@v1.VehicleType &bull; @v1.Year</div>
+                <div class="fs-5 fw-bold text-white">$@v1.Price.ToString("N0")</div>
+            </div>
+        </div>
+
+        <!-- Car 2 Card -->
+        <div class="col-md-6">
+            <div class="glass-card p-4 h-100 text-center border-info border-opacity-25" style="background: radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.08) 0%, rgba(17, 24, 39, 0.9) 100%);">
+                <div style="height: 190px; overflow: hidden; border-radius: 12px; background: #000; margin-bottom: 1.25rem;">
+                    @if (!string.IsNullOrEmpty(v2.ImageUrl))
+                    {
+                        <img src="@v2.ImageUrl" alt="@v2.Name" class="w-100 h-100" style="object-fit: cover;" 
+                             onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                    }
+                    else
+                    {
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted"><i class="bi bi-car-front" style="font-size: 4rem;"></i></div>
+                    }
+                </div>
+                <div class="small text-cyan fw-bold text-uppercase" style="color: #06b6d4;">@v2.Brand?.Name</div>
+                <h3 class="fw-bold text-white mb-1">@v2.Name</h3>
+                <div class="badge bg-dark border border-secondary text-muted rounded-pill px-3 py-1 mb-2">@v2.VehicleType &bull; @v2.Year</div>
+                <div class="fs-5 fw-bold text-white">$@v2.Price.ToString("N0")</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Battle Metrics Progress Bars -->
+    <div class="glass-card p-4 p-md-5 mb-4">
+        <h4 class="fw-bold text-white mb-4 pb-2 border-bottom border-secondary border-opacity-25 text-center">
+            <i class="bi bi-speedometer text-danger me-2"></i> Tale of the Tape
+        </h4>
+
+        <!-- Metric 1: Horsepower -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <div class="fw-bold @(v1.Horsepower >= v2.Horsepower ? "text-danger" : "text-white")">
+                    @v1.Horsepower HP
+                    @if (v1.Horsepower > v2.Horsepower) { <span class="badge bg-danger ms-1">WINNER</span> }
+                </div>
+                <div class="text-muted small fw-bold text-uppercase">HORSEPOWER</div>
+                <div class="fw-bold @(v2.Horsepower >= v1.Horsepower ? "text-cyan" : "text-white")" style="@(v2.Horsepower >= v1.Horsepower ? "color: #06b6d4;" : "")">
+                    @if (v2.Horsepower > v1.Horsepower) { <span class="badge bg-info text-dark me-1">WINNER</span> }
+                    @v2.Horsepower HP
+                </div>
+            </div>
+            @{
+                var maxHp = Math.Max(v1.Horsepower, v2.Horsepower);
+                var hpPercent1 = (v1.Horsepower / (double)maxHp) * 100;
+                var hpPercent2 = (v2.Horsepower / (double)maxHp) * 100;
+            }
+            <div class="row g-1">
+                <div class="col-6">
+                    <div class="progress" style="height: 12px; background: rgba(255,255,255,0.06); transform: rotate(180deg); border-radius: 9999px;">
+                        <div class="progress-bar bg-danger" style="width: @hpPercent1%;"></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="progress" style="height: 12px; background: rgba(255,255,255,0.06); border-radius: 9999px;">
+                        <div class="progress-bar bg-info" style="width: @hpPercent2%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric 2: Top Speed -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <div class="fw-bold @(v1.TopSpeed >= v2.TopSpeed ? "text-danger" : "text-white")">
+                    @v1.TopSpeed km/h
+                    @if (v1.TopSpeed > v2.TopSpeed) { <span class="badge bg-danger ms-1">WINNER</span> }
+                </div>
+                <div class="text-muted small fw-bold text-uppercase">TOP SPEED</div>
+                <div class="fw-bold @(v2.TopSpeed >= v1.TopSpeed ? "text-cyan" : "text-white")" style="@(v2.TopSpeed >= v1.TopSpeed ? "color: #06b6d4;" : "")">
+                    @if (v2.TopSpeed > v1.TopSpeed) { <span class="badge bg-info text-dark me-1">WINNER</span> }
+                    @v2.TopSpeed km/h
+                </div>
+            </div>
+            @{
+                var maxSpeed = Math.Max(v1.TopSpeed, v2.TopSpeed);
+                var spdPercent1 = (v1.TopSpeed / (double)maxSpeed) * 100;
+                var spdPercent2 = (v2.TopSpeed / (double)maxSpeed) * 100;
+            }
+            <div class="row g-1">
+                <div class="col-6">
+                    <div class="progress" style="height: 12px; background: rgba(255,255,255,0.06); transform: rotate(180deg); border-radius: 9999px;">
+                        <div class="progress-bar bg-danger" style="width: @spdPercent1%;"></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="progress" style="height: 12px; background: rgba(255,255,255,0.06); border-radius: 9999px;">
+                        <div class="progress-bar bg-info" style="width: @spdPercent2%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric 3: 0-100 km/h (Lower is better) -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <div class="fw-bold @(v1.Acceleration <= v2.Acceleration ? "text-danger" : "text-white")">
+                    @v1.Acceleration s
+                    @if (v1.Acceleration < v2.Acceleration) { <span class="badge bg-danger ms-1">QUICKEST</span> }
+                </div>
+                <div class="text-muted small fw-bold text-uppercase">0-100 KM/H ACCELERATION</div>
+                <div class="fw-bold @(v2.Acceleration <= v1.Acceleration ? "text-cyan" : "text-white")" style="@(v2.Acceleration <= v1.Acceleration ? "color: #06b6d4;" : "")">
+                    @if (v2.Acceleration < v1.Acceleration) { <span class="badge bg-info text-dark me-1">QUICKEST</span> }
+                    @v2.Acceleration s
+                </div>
+            </div>
+            @{
+                var minAcc = Math.Min(v1.Acceleration, v2.Acceleration);
+                // Invert percentage so lower time shows fuller bar
+                var accBar1 = Math.Clamp((minAcc / v1.Acceleration) * 100, 20, 100);
+                var accBar2 = Math.Clamp((minAcc / v2.Acceleration) * 100, 20, 100);
+            }
+            <div class="row g-1">
+                <div class="col-6">
+                    <div class="progress" style="height: 12px; background: rgba(255,255,255,0.06); transform: rotate(180deg); border-radius: 9999px;">
+                        <div class="progress-bar bg-danger" style="width: @accBar1%;"></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="progress" style="height: 12px; background: rgba(255,255,255,0.06); border-radius: 9999px;">
+                        <div class="progress-bar bg-info" style="width: @accBar2%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Specifications Comparative Table -->
+    <div class="table-custom-container mb-4">
+        <h5 class="fw-bold text-white mb-3 text-center">Engineering Comparison</h5>
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 40%;" class="text-danger">@v1.Brand?.Name @v1.Name</th>
+                    <th style="width: 20%;" class="text-center text-muted">Specification</th>
+                    <th style="width: 40%;" class="text-end text-cyan" style="color: #06b6d4;">@v2.Brand?.Name @v2.Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-white">@(v1.Engine ?? "N/A")</td>
+                    <td class="text-center text-muted small">POWERTRAIN</td>
+                    <td class="text-end fw-bold text-white">@(v2.Engine ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-white">@(v1.Transmission ?? "N/A")</td>
+                    <td class="text-center text-muted small">TRANSMISSION</td>
+                    <td class="text-end fw-bold text-white">@(v2.Transmission ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-white">@v1.Year</td>
+                    <td class="text-center text-muted small">MODEL YEAR</td>
+                    <td class="text-end fw-bold text-white">@v2.Year</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-white">$@v1.Price.ToString("N0")</td>
+                    <td class="text-center text-muted small">STARTING MSRP</td>
+                    <td class="text-end fw-bold text-white">$@v2.Price.ToString("N0")</td>
+                </tr>
+                <tr>
+                    <td>
+                        <a asp-controller="Vehicle" asp-action="Details" asp-route-id="@v1.Id" class="btn btn-sm btn-speed-outline">
+                            View @v1.Name Dossier
+                        </a>
+                    </td>
+                    <td class="text-center text-muted small">DETAILS</td>
+                    <td class="text-end">
+                        <a asp-controller="Vehicle" asp-action="Details" asp-route-id="@v2.Id" class="btn btn-sm btn-speed-outline">
+                            View @v2.Name Dossier
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="empty-state-card my-5">
+        <div class="empty-state-icon">
+            <i class="bi bi-shuffle"></i>
+        </div>
+        <h3 class="fw-bold mb-2">Select Two Vehicles to Begin</h3>
+        <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
+            At least two vehicles are required in the showroom to initiate a head-to-head performance battle.
+        </p>
+        <a asp-controller="Vehicle" asp-action="Index" class="btn btn-speed">
+            <i class="bi bi-arrow-left"></i> Return to Showroom
+        </a>
+    </div>
+}

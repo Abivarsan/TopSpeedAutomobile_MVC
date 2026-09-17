@@ -1,0 +1,139 @@
+@model Inquiry
+@{
+    ViewData["Title"] = "Book a Test Drive";
+    var vehicle = ViewBag.Vehicle as Vehicle;
+}
+
+<div class="mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+    @if (vehicle != null)
+    {
+        <a asp-controller="Vehicle" asp-action="Details" asp-route-id="@vehicle.Id" class="btn btn-sm btn-glass mb-2">
+            <i class="bi bi-arrow-left"></i> Back to @vehicle.Name
+        </a>
+    }
+    else
+    {
+        <a asp-controller="Vehicle" asp-action="Index" class="btn btn-sm btn-glass mb-2">
+            <i class="bi bi-arrow-left"></i> Back to Showroom
+        </a>
+    }
+    <h2 class="fw-bold mb-1">Book an Exclusive Test Drive</h2>
+    <p class="text-muted small mb-0">Schedule a personalized driving experience with our performance concierge.</p>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <!-- Vehicle Spotlight Column -->
+    @if (vehicle != null)
+    {
+        <div class="col-lg-5">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold text-white mb-3"><i class="bi bi-car-front-fill text-danger me-2"></i> Selected Machine</h5>
+                <div style="height: 200px; border-radius: 12px; overflow: hidden; background: #000; margin-bottom: 1.25rem;">
+                    @if (!string.IsNullOrEmpty(vehicle.ImageUrl))
+                    {
+                        <img src="@vehicle.ImageUrl" alt="@vehicle.Name" class="w-100 h-100" style="object-fit: cover;" 
+                             onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                    }
+                    else
+                    {
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted"><i class="bi bi-car-front" style="font-size: 4rem;"></i></div>
+                    }
+                </div>
+
+                <div class="small text-danger fw-bold text-uppercase">@vehicle.Brand?.Name</div>
+                <h3 class="fw-bold text-white mb-2">@vehicle.Name</h3>
+
+                <div class="p-3 mb-3 rounded-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);">
+                    <div class="row text-center g-2 small">
+                        <div class="col-4 border-end border-secondary border-opacity-25">
+                            <div class="fw-bold text-white">@vehicle.Horsepower HP</div>
+                            <div class="text-muted small">Power</div>
+                        </div>
+                        <div class="col-4 border-end border-secondary border-opacity-25">
+                            <div class="fw-bold text-white">@vehicle.Acceleration s</div>
+                            <div class="text-muted small">0-100</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="fw-bold text-white">@vehicle.TopSpeed km/h</div>
+                            <div class="text-muted small">Top Speed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="small text-muted">
+                    <i class="bi bi-shield-check text-success me-1"></i> Pre-flight safety briefing & private track slot included with every test drive booking.
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Booking Form Column -->
+    <div class="@(vehicle != null ? "col-lg-7" : "col-lg-8")">
+        <div class="glass-card">
+            <div class="card-header">
+                <h5 class="mb-0 text-white fw-bold"><i class="bi bi-calendar-event text-danger me-2"></i> Reservation Details</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    <input asp-for="VehicleId" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Name" class="form-control" placeholder="Your Full Name" />
+                                <label asp-for="Name">Full Name</label>
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                                <label asp-for="Email">Email Address</label>
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Phone" class="form-control" placeholder="+1 (555) 000-0000" />
+                                <label asp-for="Phone">Phone Number</label>
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="PreferredDate" type="date" class="form-control" 
+                                       min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" 
+                                       value="@Model.PreferredDate.ToString("yyyy-MM-dd")" />
+                                <label asp-for="PreferredDate">Preferred Date</label>
+                                <span asp-validation-for="PreferredDate" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <textarea asp-for="Message" class="form-control" placeholder="Special requests" style="height: 110px;"></textarea>
+                        <label asp-for="Message">Special Requests / Driving Experience History (Optional)</label>
+                        <span asp-validation-for="Message" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+                        <a asp-controller="Vehicle" asp-action="Index" class="btn btn-speed-outline">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-speed btn-lg">
+                            <i class="bi bi-send-check me-1"></i> Request Test Drive
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,209 @@
+@model Vehicle
+@{
+    ViewData["Title"] = $"{Model.Brand?.Name} {Model.Name} - Specifications";
+    bool isFavorited = ViewBag.IsFavorited ?? false;
+    var similar = ViewBag.SimilarVehicles as List<Vehicle> ?? new List<Vehicle>();
+}
+
+<div class="mb-4 pb-2 border-bottom border-secondary border-opacity-25 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <a asp-controller="Vehicle" asp-action="Index" class="btn btn-sm btn-glass mb-2">
+            <i class="bi bi-arrow-left"></i> Back to Showroom
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <h2 class="fw-bold mb-0">@Model.Brand?.Name <span class="text-gradient">@Model.Name</span></h2>
+            <span class="badge bg-danger rounded-pill px-3 py-1">@Model.VehicleType</span>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form asp-controller="Vehicle" asp-action="ToggleFavorite" method="post" class="d-inline">
+                <input type="hidden" name="vehicleId" value="@Model.Id" />
+                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                <button type="submit" class="btn @(isFavorited ? "btn-danger" : "btn-speed-outline")">
+                    <i class="bi @(isFavorited ? "bi-heart-fill" : "bi-heart") me-1"></i>
+                    @(isFavorited ? "In Your Garage" : "Add to Garage")
+                </button>
+            </form>
+        }
+        <a asp-controller="Vehicle" asp-action="Compare" asp-route-v1="@Model.Id" class="btn btn-speed-outline">
+            <i class="bi bi-shuffle text-warning me-1"></i> Compare Car
+        </a>
+        <a asp-controller="Inquiry" asp-action="Book" asp-route-vehicleId="@Model.Id" class="btn btn-speed">
+            <i class="bi bi-calendar-check me-1"></i> Book Test Drive
+        </a>
+    </div>
+</div>
+
+<!-- Main Vehicle Card -->
+<div class="row g-4 mb-5">
+    <!-- Vehicle Photo & Quick Overview -->
+    <div class="col-lg-7">
+        <div class="glass-card overflow-hidden">
+            <div class="position-relative" style="min-height: 380px; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(11,15,23,0.98) 100%);">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="w-100 h-100" style="object-fit: cover; max-height: 440px;" 
+                         onerror="this.src='/images/vehicles/placeholder_car.png'; this.style.objectFit='contain';" />
+                }
+                else
+                {
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted py-5">
+                        <i class="bi bi-car-front" style="font-size: 6rem; opacity: 0.25;"></i>
+                    </div>
+                }
+
+                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(180deg, transparent 0%, rgba(11,15,23,0.95) 100%);">
+                    <div class="d-flex justify-content-between align-items-end">
+                        <div>
+                            <div class="text-muted small">Manufacturer Brand</div>
+                            <h4 class="text-white fw-bold mb-0">@Model.Brand?.Name</h4>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-muted small">Starting MSRP</div>
+                            <h3 class="text-white fw-bold mb-0">$@Model.Price.ToString("N0")</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <h5 class="fw-bold text-white mb-2"><i class="bi bi-info-circle text-danger me-2"></i> Vehicle Overview</h5>
+                <p class="text-muted lead fs-6 mb-0">
+                    @(string.IsNullOrEmpty(Model.Description) ? "No detailed description provided for this vehicle model." : Model.Description)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Specs & Meter Bars -->
+    <div class="col-lg-5">
+        <div class="glass-card h-100 p-4">
+            <h5 class="fw-bold text-white mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+                <i class="bi bi-speedometer2 text-danger me-2"></i> Performance Benchmarks
+            </h5>
+
+            <!-- Horsepower Gauge -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted small fw-bold text-uppercase">Engine Output (Horsepower)</span>
+                    <span class="fw-bold text-white">@Model.Horsepower HP</span>
+                </div>
+                @{
+                    var hpPercent = Math.Clamp((Model.Horsepower / 1200.0) * 100, 5, 100);
+                }
+                <div class="progress" style="height: 10px; background: rgba(255,255,255,0.06); border-radius: 9999px;">
+                    <div class="progress-bar" role="progressbar" style="width: @hpPercent%; background: var(--gradient-speed);" 
+                         aria-valuenow="@Model.Horsepower" aria-valuemin="0" aria-valuemax="1200"></div>
+                </div>
+            </div>
+
+            <!-- Top Speed Gauge -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted small fw-bold text-uppercase">Top Speed</span>
+                    <span class="fw-bold text-white" style="color: #06b6d4 !important;">@Model.TopSpeed km/h</span>
+                </div>
+                @{
+                    var speedPercent = Math.Clamp((Model.TopSpeed / 420.0) * 100, 5, 100);
+                }
+                <div class="progress" style="height: 10px; background: rgba(255,255,255,0.06); border-radius: 9999px;">
+                    <div class="progress-bar" role="progressbar" style="width: @speedPercent%; background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%);" 
+                         aria-valuenow="@Model.TopSpeed" aria-valuemin="0" aria-valuemax="420"></div>
+                </div>
+            </div>
+
+            <!-- Acceleration Gauge -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted small fw-bold text-uppercase">0-100 km/h Acceleration</span>
+                    <span class="fw-bold text-warning">@Model.Acceleration sec</span>
+                </div>
+                @{
+                    // Lower is faster: 10s is 10%, 2.0s is 95%
+                    var accPercent = Math.Clamp((1 - (Model.Acceleration - 1.5) / 8.5) * 100, 15, 100);
+                }
+                <div class="progress" style="height: 10px; background: rgba(255,255,255,0.06); border-radius: 9999px;">
+                    <div class="progress-bar" role="progressbar" style="width: @accPercent%; background: linear-gradient(90deg, #f59e0b 0%, #10b981 100%);" 
+                         aria-valuenow="@accPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+
+            <!-- Detailed Specifications List -->
+            <h6 class="fw-bold text-white mb-3 pt-3 border-top border-secondary border-opacity-25 text-uppercase small">
+                Technical Specifications
+            </h6>
+            <ul class="list-group list-group-flush bg-transparent">
+                <li class="list-group-item bg-transparent text-white px-0 d-flex justify-content-between border-secondary border-opacity-25 py-2">
+                    <span class="text-muted">Powertrain:</span>
+                    <span class="fw-semibold">@(Model.Engine ?? "High-Output Combustion")</span>
+                </li>
+                <li class="list-group-item bg-transparent text-white px-0 d-flex justify-content-between border-secondary border-opacity-25 py-2">
+                    <span class="text-muted">Transmission:</span>
+                    <span class="fw-semibold">@(Model.Transmission ?? "Dual-Clutch Sequential")</span>
+                </li>
+                <li class="list-group-item bg-transparent text-white px-0 d-flex justify-content-between border-secondary border-opacity-25 py-2">
+                    <span class="text-muted">Model Year:</span>
+                    <span class="fw-semibold">@Model.Year</span>
+                </li>
+                <li class="list-group-item bg-transparent text-white px-0 d-flex justify-content-between border-secondary border-opacity-25 py-2">
+                    <span class="text-muted">Category:</span>
+                    <span class="fw-semibold">@Model.VehicleType</span>
+                </li>
+                <li class="list-group-item bg-transparent text-white px-0 d-flex justify-content-between border-secondary border-opacity-25 py-2">
+                    <span class="text-muted">Catalog ID:</span>
+                    <span class="font-monospace small text-muted">@Model.Id</span>
+                </li>
+            </ul>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="d-flex gap-2 mt-4 pt-3 border-top border-secondary border-opacity-25">
+                    <a asp-controller="Vehicle" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning flex-grow-1">
+                        <i class="bi bi-pencil-square"></i> Edit Vehicle
+                    </a>
+                    <a asp-controller="Vehicle" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger-glass">
+                        <i class="bi bi-trash3"></i> Delete
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Similar Vehicles Section -->
+@if (similar.Any())
+{
+    <div class="pt-4 border-top border-secondary border-opacity-25 mb-4">
+        <h4 class="fw-bold mb-3">Compare With Similar Vehicles</h4>
+        <div class="row g-3">
+            @foreach (var s in similar)
+            {
+                <div class="col-md-4">
+                    <div class="glass-card p-3 d-flex align-items-center gap-3">
+                        <div style="width: 80px; height: 60px; border-radius: 8px; overflow: hidden; background: #000;">
+                            @if (!string.IsNullOrEmpty(s.ImageUrl))
+                            {
+                                <img src="@s.ImageUrl" alt="@s.Name" class="w-100 h-100" style="object-fit: cover;" 
+                                     onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                            }
+                            else
+                            {
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted"><i class="bi bi-car-front"></i></div>
+                            }
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="small text-danger fw-bold">@s.Brand?.Name</div>
+                            <div class="fw-bold text-white">@s.Name</div>
+                            <div class="small text-muted">@s.Horsepower HP &bull; @s.TopSpeed km/h</div>
+                        </div>
+                        <a asp-controller="Vehicle" asp-action="Compare" asp-route-v1="@Model.Id" asp-route-v2="@s.Id" class="btn btn-sm btn-glass text-warning" title="Battle Compare">
+                            <i class="bi bi-shuffle"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

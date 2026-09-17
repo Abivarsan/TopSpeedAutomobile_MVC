@@ -1,0 +1,211 @@
+@model List<Vehicle>
+@{
+    ViewData["Title"] = "Vehicle Showroom";
+    var brands = ViewBag.Brands as List<Brand> ?? new List<Brand>();
+    var favoriteIds = ViewBag.FavoriteIds as HashSet<Guid> ?? new HashSet<Guid>();
+    var selectedBrand = ViewBag.SelectedBrandId as Guid?;
+    var selectedType = ViewBag.SelectedType as string ?? "All";
+    var currentSort = ViewBag.CurrentSort as string ?? "hp_desc";
+    string[] types = { "All", "Hypercar", "Supercar", "Sports Coupe", "Sedan", "SUV", "EV" };
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25 gap-3">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h2 class="mb-0 fw-bold">Performance Showroom</h2>
+            <span class="badge bg-danger rounded-pill px-3 py-1">@Model.Count Vehicles</span>
+        </div>
+        <p class="text-muted mb-0 small">Explore hypercars, supercars, and high-performance machines.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-controller="Vehicle" asp-action="Compare" class="btn btn-speed-outline">
+            <i class="bi bi-shuffle text-warning me-1"></i> Spec Battle
+        </a>
+        <a asp-controller="Vehicle" asp-action="ExportCsv" class="btn btn-glass">
+            <i class="bi bi-file-earmark-arrow-down me-1"></i> Export CSV
+        </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Vehicle" asp-action="Create" class="btn btn-speed">
+                <i class="bi bi-plus-circle-fill"></i> Add Vehicle
+            </a>
+        }
+    </div>
+</div>
+
+<!-- Filters Bar -->
+<div class="glass-card p-3 mb-4">
+    <div class="row g-3 align-items-center">
+        <!-- Category Filter Pills -->
+        <div class="col-lg-6">
+            <div class="small text-muted mb-2 fw-semibold text-uppercase">Filter by Category:</div>
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var t in types)
+                {
+                    var isActive = (selectedType == t || (t == "All" && string.IsNullOrEmpty(selectedType)));
+                    <a asp-controller="Vehicle" asp-action="Index" 
+                       asp-route-type="@(t == "All" ? "" : t)" 
+                       asp-route-brandId="@(selectedBrand.HasValue ? selectedBrand.Value.ToString() : "")"
+                       asp-route-sort="@currentSort"
+                       class="badge @(isActive ? "bg-danger text-white" : "bg-dark bg-opacity-50 text-muted border border-secondary border-opacity-25") py-2 px-3 text-decoration-none rounded-pill" style="font-size: 0.85rem;">
+                        @t
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- Brand & Sort Dropdowns -->
+        <div class="col-lg-6">
+            <form method="get" class="row g-2 justify-content-lg-end">
+                <input type="hidden" name="type" value="@(selectedType == "All" ? "" : selectedType)" />
+                <div class="col-sm-6">
+                    <label class="small text-muted mb-1 fw-semibold text-uppercase">Brand:</label>
+                    <select name="brandId" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">All Manufacturers</option>
+                        @foreach (var b in brands)
+                        {
+                            <option value="@b.Id" selected="@(selectedBrand.HasValue && selectedBrand.Value == b.Id)">
+                                @b.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <label class="small text-muted mb-1 fw-semibold text-uppercase">Sort By:</label>
+                    <select name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="hp_desc" selected="@(currentSort == "hp_desc")">Highest Horsepower</option>
+                        <option value="speed_desc" selected="@(currentSort == "speed_desc")">Top Speed</option>
+                        <option value="acc_asc" selected="@(currentSort == "acc_asc")">Fastest 0-100 km/h</option>
+                        <option value="price_asc" selected="@(currentSort == "price_asc")">Price: Low to High</option>
+                        <option value="price_desc" selected="@(currentSort == "price_desc")">Price: High to Low</option>
+                        <option value="year_desc" selected="@(currentSort == "year_desc")">Newest Model Year</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Vehicles Grid -->
+@if (Model.Any())
+{
+    <div class="row g-4">
+        @foreach (var v in Model)
+        {
+            var isFav = favoriteIds.Contains(v.Id);
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card glass-card-hover h-100 d-flex flex-column position-relative">
+                    <!-- Image Showcase -->
+                    <div class="position-relative overflow-hidden" style="height: 210px; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(11,15,23,0.95) 100%);">
+                        @if (!string.IsNullOrEmpty(v.ImageUrl))
+                        {
+                            <img src="@v.ImageUrl" alt="@v.Name" class="w-100 h-100" style="object-fit: cover; transition: transform 0.4s ease;" 
+                                 onerror="this.src='/images/vehicles/placeholder_car.png'; this.style.objectFit='contain';" />
+                        }
+                        else
+                        {
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
+                                <i class="bi bi-car-front" style="font-size: 4rem; opacity: 0.25;"></i>
+                            </div>
+                        }
+
+                        <!-- Category Pill -->
+                        <span class="badge bg-dark bg-opacity-75 text-white border border-secondary border-opacity-50 position-absolute top-0 start-0 m-3 rounded-pill px-3 py-1 small">
+                            @v.VehicleType
+                        </span>
+
+                        <!-- Favorite Button -->
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <form asp-controller="Vehicle" asp-action="ToggleFavorite" method="post" class="position-absolute top-0 end-0 m-3">
+                                <input type="hidden" name="vehicleId" value="@v.Id" />
+                                <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                <button type="submit" class="btn btn-sm rounded-circle p-2 @(isFav ? "btn-danger" : "btn-dark bg-opacity-75 border-secondary")" 
+                                        style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
+                                        title="@(isFav ? "Remove from Garage" : "Save to Virtual Garage")">
+                                    <i class="bi @(isFav ? "bi-heart-fill" : "bi-heart")"></i>
+                                </button>
+                            </form>
+                        }
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="small text-danger fw-bold text-uppercase">@v.Brand?.Name</div>
+                                <h4 class="fw-bold text-white mb-0">@v.Name</h4>
+                            </div>
+                            <span class="badge-year">@v.Year</span>
+                        </div>
+
+                        <!-- Performance Metrics Bar -->
+                        <div class="p-3 my-3 rounded-3" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);">
+                            <div class="row text-center g-2">
+                                <div class="col-4 border-end border-secondary border-opacity-25">
+                                    <div class="fs-6 fw-bold text-white">@v.Horsepower <span class="small text-danger" style="font-size: 0.7rem;">HP</span></div>
+                                    <div class="small text-muted" style="font-size: 0.75rem;">Power</div>
+                                </div>
+                                <div class="col-4 border-end border-secondary border-opacity-25">
+                                    <div class="fs-6 fw-bold text-white">@v.Acceleration<span class="small text-warning" style="font-size: 0.7rem;">s</span></div>
+                                    <div class="small text-muted" style="font-size: 0.75rem;">0-100</div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="fs-6 fw-bold text-white">@v.TopSpeed <span class="small text-cyan" style="font-size: 0.7rem; color: #06b6d4;">km/h</span></div>
+                                    <div class="small text-muted" style="font-size: 0.75rem;">Top Speed</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="small text-muted">Starting MSRP:</div>
+                            <div class="fs-5 fw-bold text-white">$@v.Price.ToString("N0")</div>
+                        </div>
+
+                        <!-- Card Action Buttons -->
+                        <div class="mt-auto d-grid gap-2">
+                            <div class="d-flex gap-2">
+                                <a asp-controller="Vehicle" asp-action="Details" asp-route-id="@v.Id" class="btn btn-speed flex-grow-1">
+                                    <i class="bi bi-speedometer2 me-1"></i> Full Specs
+                                </a>
+                                <a asp-controller="Inquiry" asp-action="Book" asp-route-vehicleId="@v.Id" class="btn btn-speed-outline" title="Book Test Drive">
+                                    <i class="bi bi-calendar-check"></i>
+                                </a>
+                                <a asp-controller="Vehicle" asp-action="Compare" asp-route-v1="@v.Id" class="btn btn-glass" title="Compare against other cars">
+                                    <i class="bi bi-shuffle"></i>
+                                </a>
+                            </div>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="d-flex justify-content-end gap-2 pt-2 border-top border-secondary border-opacity-25">
+                                    <a asp-controller="Vehicle" asp-action="Edit" asp-route-id="@v.Id" class="btn btn-sm btn-glass text-warning">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <a asp-controller="Vehicle" asp-action="Delete" asp-route-id="@v.Id" class="btn btn-sm btn-glass text-danger">
+                                        <i class="bi bi-trash3"></i> Delete
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state-card my-5">
+        <div class="empty-state-icon">
+            <i class="bi bi-car-front"></i>
+        </div>
+        <h3 class="fw-bold mb-2">No Vehicles Match Your Selection</h3>
+        <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
+            Try clearing the category or brand filters to view all high-performance vehicles.
+        </p>
+        <a asp-controller="Vehicle" asp-action="Index" class="btn btn-speed">
+            <i class="bi bi-arrow-clockwise"></i> Reset Filters
+        </a>
+    </div>
+}

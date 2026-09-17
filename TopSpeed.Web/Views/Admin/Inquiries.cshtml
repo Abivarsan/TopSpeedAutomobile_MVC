@@ -1,0 +1,113 @@
+@model List<Inquiry>
+@{
+    ViewData["Title"] = "Customer Inquiries";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25 gap-3">
+    <div>
+        <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-sm btn-glass mb-2">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <h2 class="mb-0 fw-bold">Test Drive Inquiries</h2>
+            <span class="badge bg-danger rounded-pill px-3 py-1">@Model.Count Inquiries</span>
+        </div>
+    </div>
+</div>
+
+<div class="table-custom-container">
+    @if (Model.Any())
+    {
+        <table class="table align-middle">
+            <thead>
+                <tr class="text-muted small text-uppercase">
+                    <th>Customer Name</th>
+                    <th>Contact</th>
+                    <th>Vehicle Requested</th>
+                    <th>Target Date</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var inq in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-white fs-6">@inq.Name</div>
+                            <div class="small text-muted">Submitted @inq.CreatedAt.ToString("g")</div>
+                        </td>
+                        <td>
+                            <div><i class="bi bi-envelope me-1 text-danger"></i> @inq.Email</div>
+                            @if (!string.IsNullOrEmpty(inq.Phone))
+                            {
+                                <div class="small text-muted"><i class="bi bi-telephone me-1"></i> @inq.Phone</div>
+                            }
+                        </td>
+                        <td>
+                            @if (inq.Vehicle != null)
+                            {
+                                <div class="fw-bold text-white">@inq.Vehicle.Brand?.Name @inq.Vehicle.Name</div>
+                                <div class="small text-muted">@inq.Vehicle.VehicleType &bull; @inq.Vehicle.Horsepower HP</div>
+                            }
+                            else
+                            {
+                                <span class="text-muted">General Fleet Consultation</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge bg-dark border border-secondary text-white py-2 px-3">
+                                <i class="bi bi-calendar-event me-1 text-warning"></i> @inq.PreferredDate.ToString("MMM dd, yyyy")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(inq.Status == "Confirmed" ? "bg-success" : inq.Status == "Pending" ? "bg-warning text-dark" : "bg-secondary") rounded-pill px-3 py-1">
+                                @inq.Status
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                @if (inq.Status != "Confirmed")
+                                {
+                                    <form asp-controller="Admin" asp-action="UpdateInquiryStatus" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@inq.Id" />
+                                        <input type="hidden" name="status" value="Confirmed" />
+                                        <button type="submit" class="btn btn-sm btn-glass text-success" title="Confirm Reservation">
+                                            <i class="bi bi-check-circle"></i> Confirm
+                                        </button>
+                                    </form>
+                                }
+                                @if (inq.Status != "Completed")
+                                {
+                                    <form asp-controller="Admin" asp-action="UpdateInquiryStatus" method="post" class="d-inline ms-1">
+                                        <input type="hidden" name="id" value="@inq.Id" />
+                                        <input type="hidden" name="status" value="Completed" />
+                                        <button type="submit" class="btn btn-sm btn-glass text-info" title="Mark Completed">
+                                            <i class="bi bi-flag"></i> Complete
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(inq.Message))
+                    {
+                        <tr style="background: rgba(255, 255, 255, 0.01);">
+                            <td colspan="6" class="small text-muted ps-4 py-2 border-bottom border-secondary border-opacity-25">
+                                <i class="bi bi-chat-left-quote me-1 text-warning"></i> <strong>Customer Note:</strong> "@inq.Message"
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
+            <h5 class="mt-3">No Inquiries Found</h5>
+            <p class="small">Incoming test drive reservations will appear here.</p>
+        </div>
+    }
+</div>

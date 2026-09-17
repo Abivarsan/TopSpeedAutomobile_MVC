@@ -1,0 +1,237 @@
+@{
+    ViewData["Title"] = "Admin Analytics Dashboard";
+    var fastest = ViewBag.FastestCar as Vehicle;
+    var mostPowerful = ViewBag.MostPowerfulCar as Vehicle;
+    var recentInquiries = ViewBag.RecentInquiries as List<Inquiry> ?? new List<Inquiry>();
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25 gap-3">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h2 class="mb-0 fw-bold">Admin Analytics Dashboard</h2>
+            <span class="badge bg-danger rounded-pill px-3 py-1"><i class="bi bi-shield-lock-fill"></i> Admin Portal</span>
+        </div>
+        <p class="text-muted mb-0 small">Real-time performance metrics, catalog statistics, and inquiry dispatch tracking.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-controller="Admin" asp-action="Inquiries" class="btn btn-speed-outline">
+            <i class="bi bi-envelope-paper text-warning me-1"></i> View Inquiries (@ViewBag.PendingInquiries Pending)
+        </a>
+        <a asp-controller="Brand" asp-action="Create" class="btn btn-glass">
+            <i class="bi bi-plus-circle me-1"></i> Add Brand
+        </a>
+        <a asp-controller="Vehicle" asp-action="Create" class="btn btn-speed">
+            <i class="bi bi-car-front me-1"></i> Add Vehicle
+        </a>
+    </div>
+</div>
+
+<!-- Primary Metric Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-number">@ViewBag.TotalBrands</div>
+            <div class="stat-label">Active Manufacturers</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-number">@ViewBag.TotalVehicles</div>
+            <div class="stat-label">Showroom Models</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-number" style="color: #06b6d4 !important;">
+                @(fastest != null ? $"{fastest.TopSpeed} km/h" : "N/A")
+            </div>
+            <div class="stat-label">Speed Record (@(fastest != null ? fastest.Name : "None"))</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-number" style="color: #f59e0b !important;">
+                @ViewBag.TotalInquiries
+            </div>
+            <div class="stat-label">Total Inquiries (@ViewBag.PendingInquiries New)</div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <!-- Horsepower Leaders Chart -->
+    <div class="col-lg-7">
+        <div class="glass-card p-4 h-100">
+            <h5 class="fw-bold text-white mb-3"><i class="bi bi-bar-chart-fill text-danger me-2"></i> Power Benchmarks (Top Models by Horsepower)</h5>
+            <div style="position: relative; height: 280px;">
+                <canvas id="hpChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brand Distribution Doughnut Chart -->
+    <div class="col-lg-5">
+        <div class="glass-card p-4 h-100">
+            <h5 class="fw-bold text-white mb-3"><i class="bi bi-pie-chart-fill text-warning me-2"></i> Catalog Share by Manufacturer</h5>
+            <div style="position: relative; height: 280px;">
+                <canvas id="brandChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Inquiries Section -->
+<div class="glass-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white mb-0"><i class="bi bi-clock-history text-danger me-2"></i> Recent Test Drive Inquiries</h5>
+        <a asp-controller="Admin" asp-action="Inquiries" class="small text-danger">View All Inquiries &rarr;</a>
+    </div>
+
+    @if (recentInquiries.Any())
+    {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr class="text-muted small text-uppercase">
+                        <th>Customer</th>
+                        <th>Machine</th>
+                        <th>Target Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var inq in recentInquiries)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-white">@inq.Name</div>
+                                <div class="small text-muted">@inq.Email</div>
+                            </td>
+                            <td>
+                                @if (inq.Vehicle != null)
+                                {
+                                    <span class="text-white fw-semibold">@inq.Vehicle.Brand?.Name @inq.Vehicle.Name</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">General Fleet</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge bg-dark border border-secondary text-white">
+                                    @inq.PreferredDate.ToString("MMM dd, yyyy")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge @(inq.Status == "Confirmed" ? "bg-success" : inq.Status == "Pending" ? "bg-warning text-dark" : "bg-secondary") rounded-pill px-3 py-1">
+                                    @inq.Status
+                                </span>
+                            </td>
+                            <td>
+                                @if (inq.Status == "Pending")
+                                {
+                                    <form asp-controller="Admin" asp-action="UpdateInquiryStatus" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@inq.Id" />
+                                        <input type="hidden" name="status" value="Confirmed" />
+                                        <button type="submit" class="btn btn-sm btn-glass text-success" title="Approve Request">
+                                            <i class="bi bi-check-lg"></i> Confirm
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Updated</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-4 text-muted">
+            <i class="bi bi-inbox" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            <div class="mt-2">No test drive inquiries submitted yet.</div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const hpLabels = @Html.Raw(ViewBag.TopHpLabels ?? "[]");
+        const hpData = @Html.Raw(ViewBag.TopHpData ?? "[]");
+
+        const brandLabels = @Html.Raw(ViewBag.BrandDistributionLabels ?? "[]");
+        const brandData = @Html.Raw(ViewBag.BrandDistributionData ?? "[]");
+
+        // Horsepower Bar Chart
+        new Chart(document.getElementById('hpChart'), {
+            type: 'bar',
+            data: {
+                labels: hpLabels,
+                datasets: [{
+                    label: 'Horsepower (HP)',
+                    data: hpData,
+                    backgroundColor: 'rgba(239, 68, 68, 0.75)',
+                    borderColor: '#ef4444',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: { color: '#9ca3af' },
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#9ca3af' },
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Brand Distribution Doughnut Chart
+        new Chart(document.getElementById('brandChart'), {
+            type: 'doughnut',
+            data: {
+                labels: brandLabels,
+                datasets: [{
+                    data: brandData,
+                    backgroundColor: [
+                        '#ef4444',
+                        '#f59e0b',
+                        '#06b6d4',
+                        '#10b981',
+                        '#8b5cf6',
+                        '#ec4899'
+                    ],
+                    borderColor: '#111827',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#9ca3af', boxWidth: 12 }
+                    }
+                }
+            }
+        });
+    </script>
+}

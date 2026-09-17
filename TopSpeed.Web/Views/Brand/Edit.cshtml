@@ -8,7 +8,7 @@
         <i class="bi bi-arrow-left"></i> Back to Brands
     </a>
     <h2 class="fw-bold mb-1">Edit Brand: <span class="text-gradient">@Model.Name</span></h2>
-    <p class="text-muted small mb-0">Modify manufacturer parameters or update brand crest.</p>
+    <p class="text-muted small mb-0">Modify manufacturer parameters, extended heritage details, or update brand crest.</p>
 </div>
 
 <div class="row g-4">
@@ -24,16 +24,61 @@
                     <input asp-for="BrandLogo" type="hidden" />
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-                    <div class="form-floating mb-3">
-                        <input asp-for="Name" class="form-control" placeholder="Manufacturer Name" />
-                        <label asp-for="Name">Manufacturer Name</label>
-                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-7">
+                            <div class="form-floating">
+                                <input asp-for="Name" class="form-control" placeholder="Manufacturer Name" />
+                                <label asp-for="Name">Manufacturer Name</label>
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-floating">
+                                <input asp-for="EstablishedYear" class="form-control" placeholder="Established Year" />
+                                <label asp-for="EstablishedYear">Established Year</label>
+                                <span asp-validation-for="EstablishedYear" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Country" class="form-control" placeholder="Origin Country" />
+                                <label asp-for="Country">Country of Origin</label>
+                                <span asp-validation-for="Country" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Founder" class="form-control" placeholder="Founder" />
+                                <label asp-for="Founder">Founder</label>
+                                <span asp-validation-for="Founder" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Headquarters" class="form-control" placeholder="Headquarters" />
+                                <label asp-for="Headquarters">Headquarters</label>
+                                <span asp-validation-for="Headquarters" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Website" class="form-control" placeholder="Website" />
+                                <label asp-for="Website">Official Website URL</label>
+                                <span asp-validation-for="Website" class="text-danger small"></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-floating mb-4">
-                        <input asp-for="EstablishedYear" class="form-control" placeholder="Established Year" />
-                        <label asp-for="EstablishedYear">Established Year</label>
-                        <span asp-validation-for="EstablishedYear" class="text-danger small"></span>
+                        <textarea asp-for="Description" class="form-control" placeholder="Biography" style="height: 110px;"></textarea>
+                        <label asp-for="Description">Heritage Biography / History</label>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-4">

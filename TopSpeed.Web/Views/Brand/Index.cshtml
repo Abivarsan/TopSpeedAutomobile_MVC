@@ -7,26 +7,33 @@
     <div>
         <div class="d-flex align-items-center gap-2 mb-1">
             <h2 class="mb-0 fw-bold">Automotive Brands</h2>
-            <span class="badge bg-danger rounded-pill px-3 py-1">@Model.Count() Active</span>
+            <span class="badge bg-danger rounded-pill px-3 py-1">@Model.Count Active</span>
         </div>
         <p class="text-muted mb-0 small">Browse, manage, and register world-class vehicle manufacturers.</p>
     </div>
-    <div>
-        <a asp-controller="Brand" asp-action="Create" class="btn btn-speed">
-            <i class="bi bi-plus-circle-fill"></i> Add New Brand
+    <div class="d-flex gap-2">
+        <a asp-controller="Brand" asp-action="ExportCsv" class="btn btn-glass">
+            <i class="bi bi-file-earmark-arrow-down me-1"></i> Export CSV
         </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Brand" asp-action="Create" class="btn btn-speed">
+                <i class="bi bi-plus-circle-fill"></i> Add New Brand
+            </a>
+        }
     </div>
 </div>
 
-@if (Model.Count() > 0)
+@if (Model.Count > 0)
 {
     <div class="table-custom-container">
         <table id="brandTable" class="table align-middle">
             <thead>
                 <tr>
                     <th style="width: 10%;">Emblem</th>
-                    <th style="width: 45%;">Manufacturer</th>
-                    <th style="width: 25%;" class="text-center">Established Year</th>
+                    <th style="width: 35%;">Manufacturer</th>
+                    <th style="width: 20%;">Origin</th>
+                    <th style="width: 15%;" class="text-center">Founded</th>
                     <th style="width: 20%;" class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -48,7 +55,22 @@
                         </td>
                         <td>
                             <div class="fw-bold fs-6 text-white">@item.Name</div>
-                            <div class="small text-muted">ID: @item.Id.ToString().Substring(0, 8)...</div>
+                            @if (!string.IsNullOrEmpty(item.Founder))
+                            {
+                                <div class="small text-muted">Founder: @item.Founder</div>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Country))
+                            {
+                                <span class="badge bg-dark border border-secondary text-white rounded-pill px-3 py-1">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> @item.Country
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">&mdash;</span>
+                            }
                         </td>
                         <td class="text-center">
                             <span class="badge-year">
@@ -61,14 +83,17 @@
                                    class="btn btn-sm btn-glass text-info" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a asp-controller="Brand" asp-action="Edit" asp-route-id="@item.Id" 
-                                   class="btn btn-sm btn-glass text-warning" title="Edit Brand">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a asp-controller="Brand" asp-action="Delete" asp-route-id="@item.Id" 
-                                   class="btn btn-sm btn-glass text-danger" title="Delete Brand">
-                                    <i class="bi bi-trash3"></i>
-                                </a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-controller="Brand" asp-action="Edit" asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-glass text-warning" title="Edit Brand">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-controller="Brand" asp-action="Delete" asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-glass text-danger" title="Delete Brand">
+                                        <i class="bi bi-trash3"></i>
+                                    </a>
+                                }
                             </div>
                         </td>
                     </tr>
@@ -87,9 +112,12 @@ else
         <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
             Your automotive manufacturer repository is currently empty. Add your first vehicle marque to get started.
         </p>
-        <a asp-controller="Brand" asp-action="Create" class="btn btn-speed btn-lg">
-            <i class="bi bi-plus-circle-fill"></i> Add Your First Brand
-        </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Brand" asp-action="Create" class="btn btn-speed btn-lg">
+                <i class="bi bi-plus-circle-fill"></i> Add Your First Brand
+            </a>
+        }
     </div>
 }
 

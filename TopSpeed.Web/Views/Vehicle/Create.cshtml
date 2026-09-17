@@ -1,0 +1,185 @@
+@model Vehicle
+@{
+    ViewData["Title"] = "Add New Vehicle";
+}
+
+<div class="mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+    <a asp-controller="Vehicle" asp-action="Index" class="btn btn-sm btn-glass mb-2">
+        <i class="bi bi-arrow-left"></i> Back to Showroom
+    </a>
+    <h2 class="fw-bold mb-1">Register New Vehicle</h2>
+    <p class="text-muted small mb-0">Record technical specifications and upload photography for the showroom.</p>
+</div>
+
+<div class="row g-4">
+    <!-- Form Column -->
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <div class="card-header">
+                <h5 class="mb-0 text-white fw-bold"><i class="bi bi-sliders text-danger me-2"></i> Vehicle Specifications</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="BrandId" asp-items="ViewBag.BrandList" class="form-select">
+                                    <option value="">-- Choose Manufacturer --</option>
+                                </select>
+                                <label asp-for="BrandId">Manufacturer Brand</label>
+                                <span asp-validation-for="BrandId" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Name" class="form-control" placeholder="Model Name (e.g. 911 GT3 RS)" />
+                                <label asp-for="Name">Model Name</label>
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="VehicleType" class="form-select">
+                                    <option value="Supercar">Supercar</option>
+                                    <option value="Hypercar">Hypercar</option>
+                                    <option value="Sports Coupe">Sports Coupe</option>
+                                    <option value="Sedan">Performance Sedan</option>
+                                    <option value="SUV">Performance SUV</option>
+                                    <option value="EV">Electric Hypercar</option>
+                                </select>
+                                <label asp-for="VehicleType">Category</label>
+                                <span asp-validation-for="VehicleType" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Year" class="form-control" placeholder="2024" value="2024" />
+                                <label asp-for="Year">Model Year</label>
+                                <span asp-validation-for="Year" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input asp-for="Horsepower" class="form-control" placeholder="750" />
+                                <label asp-for="Horsepower">Horsepower (HP)</label>
+                                <span asp-validation-for="Horsepower" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input asp-for="Acceleration" class="form-control" placeholder="2.8" step="0.1" />
+                                <label asp-for="Acceleration">0-100 km/h (s)</label>
+                                <span asp-validation-for="Acceleration" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input asp-for="TopSpeed" class="form-control" placeholder="330" />
+                                <label asp-for="TopSpeed">Top Speed (km/h)</label>
+                                <span asp-validation-for="TopSpeed" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Price" class="form-control" placeholder="250000" />
+                                <label asp-for="Price">Base MSRP Price (USD)</label>
+                                <span asp-validation-for="Price" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Engine" class="form-control" placeholder="4.0L Twin-Turbo V8" />
+                                <label asp-for="Engine">Engine / Powertrain</label>
+                                <span asp-validation-for="Engine" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Transmission" class="form-control" placeholder="8-Speed Dual-Clutch" />
+                        <label asp-for="Transmission">Transmission / Drivetrain</label>
+                        <span asp-validation-for="Transmission" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <textarea asp-for="Description" class="form-control" placeholder="Overview" style="height: 100px;"></textarea>
+                        <label asp-for="Description">Overview & Heritage Notes</label>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Vehicle Photography</label>
+                        <div class="upload-dropzone" id="dropzoneBox">
+                            <i class="bi bi-camera text-danger" style="font-size: 2.2rem;"></i>
+                            <div class="fw-bold mt-2 text-white">Click or drag & drop car photo</div>
+                            <div class="small text-muted">Supports JPG, PNG, WEBP high-res images</div>
+                            <input type="file" name="files" id="uploadBox" accept="image/*" />
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+                        <a asp-controller="Vehicle" asp-action="Index" class="btn btn-speed-outline">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-speed">
+                            <i class="bi bi-check2-circle"></i> Register Vehicle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Preview Column -->
+    <div class="col-lg-5">
+        <div class="glass-card">
+            <div class="card-header">
+                <h5 class="mb-0 text-white fw-bold"><i class="bi bi-eye text-warning me-2"></i> Live Photo Preview</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="logo-preview-box mb-3" style="min-height: 250px;">
+                    <div id="placeholderText" class="text-muted">
+                        <i class="bi bi-car-front" style="font-size: 3.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.4;"></i>
+                        Select a vehicle image to preview
+                    </div>
+                    <img id="logoPreview" src="#" alt="Car Preview" style="display: none; width: 100%; height: 220px; object-fit: cover; border-radius: 12px;" />
+                </div>
+                <div class="small text-muted text-start">
+                    <div class="fw-bold text-white mb-1"><i class="bi bi-lightbulb text-warning me-1"></i> Tip:</div>
+                    <span>Landscape aspect ratio photos (16:9 or 3:2) fit best in the showroom cards and details spec sheet.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('uploadBox').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const preview = document.getElementById('logoPreview');
+                    const placeholder = document.getElementById('placeholderText');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}
