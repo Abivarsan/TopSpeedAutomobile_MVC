@@ -1,46 +1,47 @@
-﻿@{
+@{
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row justify-content-center">
-    <div class="col-5 mt-5">
-        <div class="card login-logout-card">
-            <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Identity/Account/Login">
-                            Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Identity/Account/Register">
-                            Register</a>
-                    </li>
-                </ul>
+<div class="auth-wrapper">
+    <div class="glass-card auth-card shadow-lg">
+        <!-- Auth Emblem Header -->
+        <div class="text-center pt-4 pb-2">
+            <div class="brand-emblem justify-content-center mb-1">
+                <span class="icon-box" style="width: 32px; height: 32px; font-size: 1.1rem;">
+                    <i class="bi bi-speedometer2"></i>
+                </span>
+                <span class="fs-4">TopSpeed <span class="text-gradient">Auth</span></span>
             </div>
-            <div class="card-body">
-                <div class="row justify-content-center"
-                <div class="col-10 my-4">
-                    @RenderBody()
-                </div>
-                        
-            </div>
+            <p class="text-muted small mb-0">Secure Automotive Portal Access</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="auth-nav-tabs mt-3">
+            <a class="auth-tab-link" id="loginTab" href="/Identity/Account/Login">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            </a>
+            <a class="auth-tab-link" id="registerTab" href="/Identity/Account/Register">
+                <i class="bi bi-person-plus me-1"></i> Register
+            </a>
+        </div>
+
+        <!-- Content Body -->
+        <div class="card-body p-4 p-sm-5">
+            @RenderBody()
         </div>
     </div>
 </div>
 
-
-@section Scripts{
-        @await RenderSectionAsync("Scripts", required: false)
-
-        <script>
-            $(function () {
-                const currentPage = location.pathname;
-                $('.nav-tabs li a').each(function () {
-                    const $this = $(this);
-                    if (currentPage.toLowerCase().indexOf($this.attr('href').toLowerCase()) !== -1) {
-                        $this.addClass('active');
-                    }
-                })
-            })
-        </script>
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(function () {
+            const currentPath = location.pathname.toLowerCase();
+            if (currentPath.includes('register')) {
+                $('#registerTab').addClass('active');
+            } else if (currentPath.includes('login') || currentPath.includes('forgotpassword') || currentPath.includes('resetpassword')) {
+                $('#loginTab').addClass('active');
+            }
+        });
+    </script>
 }

@@ -12,7 +12,7 @@ using TopSpeed.Web.Data;
 namespace TopSpeed.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241017155252_inital")]
+    [Migration("20241022064745_inital")]
     partial class inital
     {
         /// <inheritdoc />

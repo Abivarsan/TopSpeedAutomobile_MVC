@@ -1,39 +1,62 @@
-﻿@model Brand
+@model Brand
+@{
+    ViewData["Title"] = "Delete Brand - " + Model.Name;
+}
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-uppercase text-center">Delete Brand</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8 border-1 border">
-            <form method="post" enctype="multipart/form-data">
-                <input asp-for="@Model.Id" hidden/>
-                <input asp-for="@Model.BrandLogo" hidden />
-                <div class="mb-3">
-                    <label asp-for="@Model.Name" class=" form-label"></label>
-                    <input asp-for="@Model.Name" class="form-control" disabled />
-                </div>
-                <div class="mb-3">
-                    <label asp-for="@Model.EstablishedYear" class=" form-label"></label>
-                    <input asp-for="@Model.EstablishedYear" class="form-control" disabled/>
-                </div>
-                <div class="mb-3">
-                    <a asp-controller="Brand" asp-action="Index" class="btn btn-warning">Back</a>
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-4">
-            @if (Model.BrandLogo != null)
-            {
-                <img src="@Model.BrandLogo" width="100%" />
-            })
-        </div>
-    </div>
-
+<div class="mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+    <a asp-controller="Brand" asp-action="Index" class="btn btn-sm btn-glass mb-2">
+        <i class="bi bi-arrow-left"></i> Back to Brands
+    </a>
+    <h2 class="fw-bold mb-1 text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i> Delete Brand Confirmation</h2>
+    <p class="text-muted small mb-0">Review manufacturer details before permanently removing from catalog.</p>
 </div>
 
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="glass-card border-danger border-opacity-50" style="box-shadow: 0 0 35px -5px rgba(239, 68, 68, 0.25);">
+            <div class="card-header bg-danger bg-opacity-10 border-danger border-opacity-25 d-flex align-items-center gap-2 text-danger">
+                <i class="bi bi-shield-slash-fill fs-5"></i>
+                <span class="fw-bold">Irreversible Action Warning</span>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted mb-4">
+                    You are about to remove <strong>@Model.Name</strong> and its associated emblem from the database. All records tied to this marque will be permanently deleted.
+                </p>
 
+                <div class="row align-items-center g-4 p-3 rounded-3 mb-4" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);">
+                    <div class="col-sm-4 text-center">
+                        <div class="brand-thumbnail-wrapper" style="width: 90px; height: 90px;">
+                            @if (!string.IsNullOrEmpty(Model.BrandLogo))
+                            {
+                                <img src="@Model.BrandLogo" alt="@Model.Name Logo" />
+                            }
+                            else
+                            {
+                                <i class="bi bi-car-front text-muted" style="font-size: 2.5rem;"></i>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <h4 class="text-white fw-bold mb-1">@Model.Name</h4>
+                        <div class="text-muted small mb-2">Established Year: <span class="text-white fw-semibold">@Model.EstablishedYear</span></div>
+                        <div class="text-muted small">Unique ID: <code>@Model.Id</code></div>
+                    </div>
+                </div>
 
+                <form method="post">
+                    <input asp-for="Id" type="hidden" />
+                    <input asp-for="BrandLogo" type="hidden" />
+                    
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+                        <a asp-controller="Brand" asp-action="Index" class="btn btn-speed-outline">
+                            <i class="bi bi-arrow-left"></i> Cancel & Keep
+                        </a>
+                        <button type="submit" class="btn btn-danger-glass btn-lg px-4" style="background: var(--speed-red); color: white;">
+                            <i class="bi bi-trash3-fill me-1"></i> Delete Forever
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

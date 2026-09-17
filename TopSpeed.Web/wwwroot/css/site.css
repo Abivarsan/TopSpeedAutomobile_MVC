@@ -1,47 +1,711 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg-base: #0a0e17;
+    --bg-surface: #111827;
+    --bg-card: rgba(17, 24, 39, 0.85);
+    --bg-card-elevated: #1f2937;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-highlight: rgba(255, 255, 255, 0.16);
+    --border-accent: rgba(239, 68, 68, 0.4);
+    --speed-red: #ef4444;
+    --speed-red-glow: rgba(239, 68, 68, 0.35);
+    --speed-amber: #f59e0b;
+    --speed-cyan: #06b6d4;
+    --gradient-speed: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #f59e0b 100%);
+    --gradient-speed-subtle: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%);
+    --gradient-dark: linear-gradient(180deg, #111827 0%, #0a0e17 100%);
+    --text-main: #f9fafb;
+    --text-muted: #9ca3af;
+    --text-dim: #6b7280;
+    --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.07);
+    --shadow-glow: 0 8px 25px -4px rgba(239, 68, 68, 0.4);
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --radius-sm: 6px;
+}
+
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+}
+
 html {
-  font-size: 14px;
+    font-size: 15px;
+    position: relative;
+    min-height: 100%;
+    scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
-  font-family:Roboto,sans-serif;    
+    background-color: var(--bg-base);
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
+        linear-gradient(180deg, #0d121d 0%, #0a0e17 100%);
+    background-attachment: fixed;
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* tab navigation*/
-.login-logout-card .card-header{
-    padding: 0px 0px 12px 0px;
+h1, h2, h3, h4, h5, h6, .brand-font {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
 }
 
-.login-logout-card ul.nav-tabs{
-    margin: 0px 0px -12px 0px;
+a {
+    color: var(--speed-red);
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
-.login-logout-card li.nav-item{
-    width:50%;
+a:hover {
+    color: #f87171;
+    text-decoration: none;
 }
 
-.login-logout-card a.nav-link{
-    font-size:1rem;
-    color: #495057;
+/* ==========================================================================
+   Glassmorphic Header & Navigation
+   ========================================================================== */
+.navbar-custom {
+    background: rgba(11, 15, 23, 0.82) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.85rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.brand-emblem {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #ffffff !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: transform 0.25s ease;
+}
+
+.brand-emblem:hover {
+    transform: translateY(-1px);
+}
+
+.brand-emblem .icon-box {
+    width: 38px;
+    height: 38px;
+    background: var(--gradient-speed);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.25rem;
+    box-shadow: var(--shadow-glow);
+}
+
+.brand-emblem .text-gradient {
+    background: var(--gradient-speed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-link-custom {
+    color: var(--text-muted) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.nav-link-custom:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link-custom.active {
+    color: #ffffff !important;
+    background: var(--gradient-speed-subtle);
+    border: 1px solid var(--border-accent);
+}
+
+.navbar-toggler {
+    border-color: var(--border-subtle);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.45rem 0.65rem;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem var(--speed-red-glow);
+}
+
+.navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* User Pill & Auth Buttons */
+.user-badge-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: #ffffff !important;
+    border-radius: 9999px;
+    padding: 0.35rem 0.95rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.user-badge-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-highlight);
+}
+
+.user-avatar-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--gradient-speed);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   Buttons & Interactive Elements
+   ========================================================================== */
+.btn-speed {
+    background: var(--gradient-speed);
+    border: none;
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 0.65rem 1.4rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-glow);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+
+.btn-speed:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px -3px rgba(239, 68, 68, 0.55);
+    color: #ffffff;
+}
+
+.btn-speed:active {
+    transform: translateY(0);
+}
+
+.btn-speed-outline {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-highlight);
+    color: var(--text-main) !important;
+    font-weight: 500;
+    padding: 0.65rem 1.4rem;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-speed-outline:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #ffffff;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+}
+
+.btn-glass {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.btn-danger-glass {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-danger-glass:hover {
+    background: var(--speed-red);
+    color: #ffffff;
+    box-shadow: var(--shadow-glow);
+}
+
+/* ==========================================================================
+   Cards & Panels
+   ========================================================================== */
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card-hover:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-highlight);
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.glass-card .card-header {
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 1.25rem 1.5rem;
+}
+
+.glass-card .card-body {
+    padding: 1.75rem;
+}
+
+/* ==========================================================================
+   Forms & Controls
+   ========================================================================== */
+.form-control, .form-select {
+    background-color: rgba(17, 24, 39, 0.7) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: #ffffff !important;
+    border-radius: var(--radius-md) !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: rgba(26, 35, 52, 0.85) !important;
+    border-color: var(--speed-red) !important;
+    box-shadow: 0 0 0 0.25rem var(--speed-red-glow) !important;
+    color: #ffffff !important;
+}
+
+.form-floating > .form-control {
+    padding-top: 1.625rem !important;
+    padding-bottom: 0.625rem !important;
+}
+
+.form-floating > label {
+    color: var(--text-muted) !important;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: var(--speed-red) !important;
+}
+
+.form-check-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-subtle);
+}
+
+.form-check-input:checked {
+    background-color: var(--speed-red);
+    border-color: var(--speed-red);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem var(--speed-red-glow);
+}
+
+/* Upload Dropzone */
+.upload-dropzone {
+    border: 2px dashed var(--border-highlight);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
     text-align: center;
-    padding:1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
 }
 
-.login-logout-card .card-body{
-    padding:10px 20px;
+.upload-dropzone:hover {
+    border-color: var(--speed-red);
+    background: rgba(239, 68, 68, 0.03);
+}
+
+.upload-dropzone input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Live Logo Preview */
+.logo-preview-box {
+    width: 100%;
+    min-height: 220px;
+    border-radius: var(--radius-lg);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(17, 24, 39, 0.9) 100%);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-preview-box img {
+    max-height: 160px;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
+    transition: transform 0.3s ease;
+}
+
+.logo-preview-box:hover img {
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   DataTables & Custom Table Styling
+   ========================================================================== */
+.table-custom-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+}
+
+table.dataTable {
+    border-collapse: separate !important;
+    border-spacing: 0 8px !important;
+    margin-top: 1rem !important;
+    width: 100% !important;
+    color: var(--text-main) !important;
+}
+
+table.dataTable thead th {
+    background: transparent !important;
+    color: var(--text-muted) !important;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    padding: 0.85rem 1rem !important;
+}
+
+table.dataTable tbody tr {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+table.dataTable tbody tr:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+    transform: translateY(-1px);
+}
+
+table.dataTable tbody td {
+    padding: 1rem !important;
+    border-top: 1px solid var(--border-subtle) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    vertical-align: middle;
+}
+
+table.dataTable tbody td:first-child {
+    border-left: 1px solid var(--border-subtle);
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+}
+
+table.dataTable tbody td:last-child {
+    border-right: 1px solid var(--border-subtle);
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+}
+
+.dt-search input {
+    background: rgba(17, 24, 39, 0.8) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: #ffffff !important;
+    border-radius: var(--radius-md) !important;
+    padding: 0.4rem 0.85rem !important;
+    margin-left: 0.5rem;
+}
+
+.dt-paging-button {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: var(--text-main) !important;
+    border-radius: var(--radius-sm) !important;
+    margin: 0 2px;
+}
+
+.dt-paging-button.current {
+    background: var(--speed-red) !important;
+    border-color: var(--speed-red) !important;
+    color: #ffffff !important;
+}
+
+/* Brand Logo Thumbnail in Table */
+.brand-thumbnail-wrapper {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    overflow: hidden;
+}
+
+.brand-thumbnail-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Badge Chips */
+.badge-year {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Home Landing Page Styles
+   ========================================================================== */
+.hero-section {
+    padding: 4.5rem 0 3.5rem;
+    position: relative;
+}
+
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+}
+
+.hero-title {
+    font-size: 3.25rem;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+    font-weight: 800;
+}
+
+@media (min-width: 992px) {
+    .hero-title {
+        font-size: 4.25rem;
+    }
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    max-width: 640px;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+}
+
+.stat-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    background: var(--gradient-speed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.feature-box {
+    padding: 2rem;
+    height: 100%;
+}
+
+.feature-icon-wrapper {
+    width: 54px;
+    height: 54px;
+    border-radius: var(--radius-md);
+    background: var(--gradient-speed-subtle);
+    border: 1px solid var(--border-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: var(--speed-red);
+    margin-bottom: 1.25rem;
+}
+
+/* ==========================================================================
+   Auth / Login / Register Page Styling
+   ========================================================================== */
+.auth-wrapper {
+    min-height: calc(100vh - 220px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.auth-card {
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 20px;
+}
+
+.auth-nav-tabs {
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    background: rgba(255, 255, 255, 0.02);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    overflow: hidden;
+}
+
+.auth-nav-tabs .auth-tab-link {
+    flex: 1;
+    text-align: center;
+    padding: 1.1rem 1rem;
+    color: var(--text-muted);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    border: none;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.auth-nav-tabs .auth-tab-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.auth-nav-tabs .auth-tab-link.active {
+    color: #ffffff;
+    background: rgba(239, 68, 68, 0.1);
+    border-bottom: 2px solid var(--speed-red);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.footer-custom {
+    background: rgba(11, 15, 23, 0.95);
+    border-top: 1px solid var(--border-subtle);
+    padding: 2.5rem 0 1.5rem;
+    margin-top: auto;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.footer-custom a {
+    color: var(--text-muted);
+}
+
+.footer-custom a:hover {
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+.empty-state-card {
+    text-align: center;
+    padding: 4rem 2rem;
+    border: 2px dashed var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.empty-state-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--gradient-speed-subtle);
+    border: 1px solid var(--border-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--speed-red);
+    margin-bottom: 1.5rem;
 }

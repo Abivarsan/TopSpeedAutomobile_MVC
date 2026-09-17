@@ -1,45 +1,77 @@
-﻿@model Brand
+@model Brand
+@{
+    ViewData["Title"] = "Brand Details - " + Model.Name;
+}
 
-<div class="container"> 
-    <div class="card">
-        <div class="card-header text-center text-uppercase">
-            Brand Details
-        </div>
-        <div class="card-body">
-            <div class="row>">
-                <div class="col-md-8">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <p class="card-text text-uppercase"><strong>Id</strong></p>
-                        </div>
-                        <div class="col-md-8">
-                            <p class="card-text">: @Model.Id</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <p class="card-text text-uppercase"><strong>Brand Name</strong></p>
-                        </div>
-                        <div class="col-md-8">
-                            <p class="card-text">: @Model.Name</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <p class="card-text text-uppercase"><strong>Established Year</strong></p>
-                        </div>
-                        <div class="col-md-8">
-                            <p class="card-text">: @Model.EstablishedYear</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <img src="@Model.BrandLogo" width="100%" />
-                </div>
+<div class="mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+    <a asp-controller="Brand" asp-action="Index" class="btn btn-sm btn-glass mb-2">
+        <i class="bi bi-arrow-left"></i> Back to Brands
+    </a>
+    <h2 class="fw-bold mb-1">Brand Specification Sheet</h2>
+    <p class="text-muted small mb-0">Complete dossier and specifications for @Model.Name.</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="glass-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="badge bg-danger rounded-pill px-3 py-1">Automotive Marque</span>
+                <span class="small text-muted">Record ID: @Model.Id</span>
             </div>
-            <div class="row">
-                <div class="col-md-12 text-center" >
-                    <a asp-controller="Brand" asp-action="Index" class="btn btn-danger">Back</a>
+            <div class="card-body p-4 p-md-5">
+                <div class="row align-items-center g-4">
+                    <div class="col-md-7">
+                        <h1 class="display-5 fw-bold text-white mb-2">@Model.Name</h1>
+                        <div class="d-flex align-items-center gap-2 mb-4">
+                            <span class="badge-year fs-6">
+                                <i class="bi bi-calendar-event me-1"></i> Founded in @Model.EstablishedYear
+                            </span>
+                            <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 rounded-pill px-3 py-1">
+                                <i class="bi bi-check-circle-fill me-1"></i> Active Manufacturer
+                            </span>
+                        </div>
+
+                        <div class="glass-card p-3 mb-4" style="background: rgba(255, 255, 255, 0.02);">
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <div class="small text-muted text-uppercase">Heritage Age</div>
+                                    <div class="fs-5 fw-bold text-white">@(DateTime.Now.Year - Model.EstablishedYear) Years</div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="small text-muted text-uppercase">Catalog Index</div>
+                                    <div class="fs-5 fw-bold text-white">Verified</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <a asp-controller="Brand" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-speed">
+                                <i class="bi bi-pencil-square"></i> Edit Specifications
+                            </a>
+                            <a asp-controller="Brand" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger-glass">
+                                <i class="bi bi-trash3"></i> Delete
+                            </a>
+                            <a asp-controller="Brand" asp-action="Index" class="btn btn-speed-outline">
+                                Back to Catalog
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 text-center">
+                        <div class="logo-preview-box p-4" style="min-height: 260px;">
+                            @if (!string.IsNullOrEmpty(Model.BrandLogo))
+                            {
+                                <img src="@Model.BrandLogo" alt="@Model.Name Official Emblem" style="max-height: 200px;" />
+                            }
+                            else
+                            {
+                                <div class="text-muted">
+                                    <i class="bi bi-car-front" style="font-size: 4rem; opacity: 0.3;"></i>
+                                    <div class="mt-2">No official emblem available</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

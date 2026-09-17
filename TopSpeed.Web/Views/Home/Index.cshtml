@@ -1,8 +1,147 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Engineered for Speed";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-7">
+            <div class="hero-tag">
+                <i class="bi bi-fire text-danger"></i> Next-Gen Automobile Platform
+            </div>
+            <h1 class="hero-title">
+                Engineered for Speed, <br />
+                <span class="text-gradient">Driven by Precision.</span>
+            </h1>
+            <p class="hero-subtitle">
+                The premier hub for managing iconic automobile manufacturers, classic marques, and performance hypercars. Track heritage, upload emblems, and curate your automotive empire.
+            </p>
+            <div class="d-flex flex-wrap gap-3 mb-4">
+                <a asp-controller="Brand" asp-action="Index" class="btn btn-speed btn-lg">
+                    <i class="bi bi-grid-3x3-gap-fill"></i> Explore Brands
+                </a>
+                <a asp-controller="Brand" asp-action="Create" class="btn btn-speed-outline btn-lg">
+                    <i class="bi bi-plus-circle-dotted"></i> Register Brand
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="row g-3 pt-3">
+                <div class="col-6 col-sm-4">
+                    <div class="stat-card">
+                        <div class="stat-number">100+</div>
+                        <div class="stat-label">Years of Heritage</div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4">
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Cloud Synchronized</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="stat-card">
+                        <div class="stat-number">&infin;</div>
+                        <div class="stat-label">Performance Scaling</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="glass-card p-4 p-md-5 text-center position-relative overflow-hidden">
+                <div class="position-absolute top-0 end-0 p-3 opacity-25">
+                    <i class="bi bi-speedometer2" style="font-size: 8rem; color: var(--speed-red);"></i>
+                </div>
+                <div class="position-relative z-1">
+                    <div class="feature-icon-wrapper mx-auto mb-4" style="width: 70px; height: 70px; font-size: 2.2rem;">
+                        <i class="bi bi-car-front-fill"></i>
+                    </div>
+                    <h3 class="mb-3">Automotive Hub</h3>
+                    <p class="text-muted mb-4">
+                        Curate manufacturer records with established dates, high-resolution logos, and quick management controls.
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Brand" asp-action="Index" class="btn btn-glass">
+                            <i class="bi bi-arrow-right-circle text-danger me-2"></i> View Live Directory
+                        </a>
+                        <a asp-controller="Brand" asp-action="Create" class="btn btn-glass">
+                            <i class="bi bi-plus-lg text-warning me-2"></i> Add Manufacturer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="row text-center mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="text-uppercase text-danger fw-bold small letter-spacing-1 mb-2">Core Capabilities</div>
+            <h2 class="display-6 fw-bold">Everything You Need for Vehicle Marque Management</h2>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="glass-card glass-card-hover feature-box">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-award"></i>
+                </div>
+                <h4>Brand Lineage</h4>
+                <p class="text-muted mb-0">
+                    Chronicle the foundation years and historical roots of world-leading automotive titans and boutique hypercar builders.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card glass-card-hover feature-box">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-image"></i>
+                </div>
+                <h4>Emblem Curation</h4>
+                <p class="text-muted mb-0">
+                    Store and showcase high-fidelity brand crests, shields, and monograms with dynamic live preview capabilities.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card glass-card-hover feature-box">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <h4>Enterprise Security</h4>
+                <p class="text-muted mb-0">
+                    Protected by ASP.NET Core Identity with role-based authorization, encrypted passwords, and secure password reset tokens.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="py-5 my-3">
+    <div class="glass-card p-4 p-md-5 text-center position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(17, 24, 39, 0.95) 100%);">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h3 class="display-6 fw-bold mb-3">Ready to Expand the Catalog?</h3>
+                <p class="text-muted lead mb-4">
+                    Register a new manufacturer in seconds with real-time logo uploads and instant validation.
+                </p>
+                <div class="d-inline-flex flex-wrap gap-3 justify-content-center">
+                    <a asp-controller="Brand" asp-action="Create" class="btn btn-speed btn-lg">
+                        <i class="bi bi-plus-circle"></i> Create Brand Now
+                    </a>
+                    <a asp-controller="Brand" asp-action="Index" class="btn btn-speed-outline btn-lg">
+                        <i class="bi bi-view-list"></i> View Catalog
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

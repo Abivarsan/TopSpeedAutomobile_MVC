@@ -1,46 +1,113 @@
-﻿@model Brand
+@model Brand
+@{
+    ViewData["Title"] = "Edit Brand - " + Model.Name;
+}
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-uppercase text-center">Edit Brand</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8 border-1 border">
-            <form method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label asp-for="@Model.Name" class=" form-label"></label>
-                    <input asp-for="@Model.Name" class="form-control" />
-                    <span asp-validation-for="@Model.Name" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="@Model.EstablishedYear" class=" form-label"></label>
-                    <input asp-for="@Model.EstablishedYear" class="form-control" />
-                    <span asp-validation-for="@Model.EstablishedYear" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="@Model.BrandLogo" class=" form-label"></label>
-                    <input type="file" name="files" id="uploadBox" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <a asp-controller="Brand" asp-action="Index" class="btn btn-danger">Back</a>
-                    <button type="submit" class="btn btn-warning">Update</button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-4">
-            @if(Model.BrandLogo != null)
-            {
-                <img src="@Model.BrandLogo" width="100%" />
-            })
-        </div>
-    </div>
-
+<div class="mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+    <a asp-controller="Brand" asp-action="Index" class="btn btn-sm btn-glass mb-2">
+        <i class="bi bi-arrow-left"></i> Back to Brands
+    </a>
+    <h2 class="fw-bold mb-1">Edit Brand: <span class="text-gradient">@Model.Name</span></h2>
+    <p class="text-muted small mb-0">Modify manufacturer parameters or update brand crest.</p>
 </div>
 
+<div class="row g-4">
+    <!-- Form Column -->
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <div class="card-header">
+                <h5 class="mb-0 text-white fw-bold"><i class="bi bi-sliders text-warning me-2"></i> Update Specifications</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <input asp-for="Id" type="hidden" />
+                    <input asp-for="BrandLogo" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
+                    <div class="form-floating mb-3">
+                        <input asp-for="Name" class="form-control" placeholder="Manufacturer Name" />
+                        <label asp-for="Name">Manufacturer Name</label>
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="EstablishedYear" class="form-control" placeholder="Established Year" />
+                        <label asp-for="EstablishedYear">Established Year</label>
+                        <span asp-validation-for="EstablishedYear" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Replace Emblem (Optional)</label>
+                        <div class="upload-dropzone" id="dropzoneBox">
+                            <i class="bi bi-arrow-repeat text-warning" style="font-size: 2.2rem;"></i>
+                            <div class="fw-bold mt-2 text-white">Upload new emblem image</div>
+                            <div class="small text-muted">Leave blank to keep existing logo</div>
+                            <input type="file" name="files" id="uploadBox" accept="image/*" />
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+                        <a asp-controller="Brand" asp-action="Index" class="btn btn-speed-outline">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-speed" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
+                            <i class="bi bi-check2-circle"></i> Update Brand
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Preview Column -->
+    <div class="col-lg-5">
+        <div class="glass-card">
+            <div class="card-header">
+                <h5 class="mb-0 text-white fw-bold"><i class="bi bi-image text-warning me-2"></i> Brand Emblem</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="logo-preview-box mb-3" id="previewContainer">
+                    @if (!string.IsNullOrEmpty(Model.BrandLogo))
+                    {
+                        <img id="logoPreview" src="@Model.BrandLogo" alt="@Model.Name Logo" />
+                        <div id="placeholderText" class="text-muted" style="display: none;">
+                            <i class="bi bi-image" style="font-size: 3rem; display: block; margin-bottom: 0.5rem; opacity: 0.4;"></i>
+                            No emblem assigned
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="placeholderText" class="text-muted">
+                            <i class="bi bi-image" style="font-size: 3rem; display: block; margin-bottom: 0.5rem; opacity: 0.4;"></i>
+                            No emblem assigned
+                        </div>
+                        <img id="logoPreview" src="#" alt="Logo Preview" style="display: none;" />
+                    }
+                </div>
+                <div class="small text-muted">
+                    <span>Currently registered logo. Choosing a new file will update the preview immediately.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('uploadBox').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const preview = document.getElementById('logoPreview');
+                    const placeholder = document.getElementById('placeholderText');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 }

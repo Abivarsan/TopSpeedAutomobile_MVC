@@ -18,13 +18,29 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register Identity services with ApplicationUser and IdentityRole
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;  // Optional: Force email confirmation for account sign-in
+    options.SignIn.RequireConfirmedAccount = false;  // Optional: Force email confirmation for account sign-in
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();  // Required for features like password reset tokens
+.AddDefaultTokenProviders()
+.AddDefaultUI();  // Required for features like password reset tokens and Identity UI
 
 // Register the EmailSender service
 builder.Services.AddSingleton<IEmailSender, EmailSender>(); // Add EmailSender service
+
+// Make sure you're not calling AddAuthentication more than once
+// and avoid specifying the scheme here if it's already added by AddDefaultIdentity.
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+});
+
+//Password Validation
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireUppercase = false;
+});
 
 var app = builder.Build();
 

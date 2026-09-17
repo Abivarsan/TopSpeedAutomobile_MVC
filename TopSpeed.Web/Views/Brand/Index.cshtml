@@ -1,60 +1,111 @@
-﻿@model List<Brand>
+@model List<Brand>
+@{
+    ViewData["Title"] = "Brand Catalog";
+}
 
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-md-6 text-uppercase">
-            <h2>Brand List</h2>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25 gap-3">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h2 class="mb-0 fw-bold">Automotive Brands</h2>
+            <span class="badge bg-danger rounded-pill px-3 py-1">@Model.Count() Active</span>
         </div>
-        <div class="col-md-6 text-end"> 
-            <a asp-controller="Brand" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i>Create</a>
-        </div>
+        <p class="text-muted mb-0 small">Browse, manage, and register world-class vehicle manufacturers.</p>
     </div>
-    <hr />
-    @if(Model.Count() > 0){
-        <table id="table" class="table table-bordered table-stripped">
-        <thead>
-            <tr>
-                <th class="text-center">Name</th>
-                <th class="text-center">Established Year</th>
-                <th class="text-center">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var item in Model)
-            {
-                <tr>
-                    <td width="40%">@item.Name</td>
-                    <td width="40%">@item.EstablishedYear</td>
-                    <td class="d-flex align-items-center justify-content-center">
-                        <div class="w-75 btn-group" role="group">
-                            <a asp-controller="Brand" asp-action="Details" asp-route-id="@item.Id"
-                            class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Details">
-                            <i class="bi bi-info-circle"></i></a>
-                            <a asp-controller="Brand" asp-action="Edit" asp-route-id="@item.Id"
-                            class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="bi bi-pencil-square"></i></a>
-                            <a asp-controller="Brand" asp-action="Delete" asp-route-id="@item.Id"
-                            class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="bi bi-trash"></i></a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    }else{
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="text-center text-uppercase text-warning pt-4">No Records to Show</h2>
-                </div>
-            </div>
-        </div>
-    }
+    <div>
+        <a asp-controller="Brand" asp-action="Create" class="btn btn-speed">
+            <i class="bi bi-plus-circle-fill"></i> Add New Brand
+        </a>
+    </div>
 </div>
 
-@section Scripts{
+@if (Model.Count() > 0)
+{
+    <div class="table-custom-container">
+        <table id="brandTable" class="table align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">Emblem</th>
+                    <th style="width: 45%;">Manufacturer</th>
+                    <th style="width: 25%;" class="text-center">Established Year</th>
+                    <th style="width: 20%;" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="brand-thumbnail-wrapper">
+                                @if (!string.IsNullOrEmpty(item.BrandLogo))
+                                {
+                                    <img src="@item.BrandLogo" alt="@item.Name Logo" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-car-front text-muted" style="font-size: 1.5rem;"></i>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="fw-bold fs-6 text-white">@item.Name</div>
+                            <div class="small text-muted">ID: @item.Id.ToString().Substring(0, 8)...</div>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge-year">
+                                <i class="bi bi-calendar3 me-1"></i> @item.EstablishedYear
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group" aria-label="Brand Actions">
+                                <a asp-controller="Brand" asp-action="Details" asp-route-id="@item.Id" 
+                                   class="btn btn-sm btn-glass text-info" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-controller="Brand" asp-action="Edit" asp-route-id="@item.Id" 
+                                   class="btn btn-sm btn-glass text-warning" title="Edit Brand">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-controller="Brand" asp-action="Delete" asp-route-id="@item.Id" 
+                                   class="btn btn-sm btn-glass text-danger" title="Delete Brand">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="empty-state-card my-5">
+        <div class="empty-state-icon">
+            <i class="bi bi-speedometer2"></i>
+        </div>
+        <h3 class="fw-bold mb-2">No Brands in Catalog Yet</h3>
+        <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
+            Your automotive manufacturer repository is currently empty. Add your first vehicle marque to get started.
+        </p>
+        <a asp-controller="Brand" asp-action="Create" class="btn btn-speed btn-lg">
+            <i class="bi bi-plus-circle-fill"></i> Add Your First Brand
+        </a>
+    </div>
+}
+
+@section Scripts {
     <script>
-            $('.table').DataTable();
+        $(document).ready(function () {
+            if ($('#brandTable').length) {
+                $('#brandTable').DataTable({
+                    pageLength: 10,
+                    responsive: true,
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search brands..."
+                    }
+                });
+            }
+        });
     </script>
 }

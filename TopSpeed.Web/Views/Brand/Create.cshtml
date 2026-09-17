@@ -1,40 +1,104 @@
-﻿@model Brand
+@model Brand
+@{
+    ViewData["Title"] = "Register New Brand";
+}
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-uppercase text-center">Create Brand</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 border-1 border">
-            <form method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label asp-for="@Model.Name" class=" form-label"></label>
-                    <input asp-for="@Model.Name" class="form-control" />
-                    <span asp-validation-for="@Model.Name" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="@Model.EstablishedYear" class=" form-label"></label>
-                    <input asp-for="@Model.EstablishedYear" class="form-control" />
-                    <span asp-validation-for="@Model.EstablishedYear" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="@Model.BrandLogo" class=" form-label"></label>
-                    <input type="file" name="files" id="uploadBox" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <a asp-controller="Brand" asp-action="Index" class="btn btn-danger">Back</a>
-                    <button type="submit" class="btn btn-success">Create</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+<div class="mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+    <a asp-controller="Brand" asp-action="Index" class="btn btn-sm btn-glass mb-2">
+        <i class="bi bi-arrow-left"></i> Back to Brands
+    </a>
+    <h2 class="fw-bold mb-1">Register New Brand</h2>
+    <p class="text-muted small mb-0">Add a new automotive manufacturer and emblem to the catalog.</p>
 </div>
 
+<div class="row g-4">
+    <!-- Form Column -->
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <div class="card-header">
+                <h5 class="mb-0 text-white fw-bold"><i class="bi bi-pencil-square text-danger me-2"></i> Brand Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
+                    <div class="form-floating mb-3">
+                        <input asp-for="Name" class="form-control" placeholder="Manufacturer Name (e.g. Ferrari)" />
+                        <label asp-for="Name">Manufacturer Name</label>
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
 
-@section Scripts{
-    <partial name="_ValidationScriptsPartial"/>
+                    <div class="form-floating mb-4">
+                        <input asp-for="EstablishedYear" class="form-control" placeholder="1947" />
+                        <label asp-for="EstablishedYear">Established Year</label>
+                        <span asp-validation-for="EstablishedYear" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Brand Emblem / Logo</label>
+                        <div class="upload-dropzone" id="dropzoneBox">
+                            <i class="bi bi-cloud-arrow-up text-danger" style="font-size: 2.2rem;"></i>
+                            <div class="fw-bold mt-2 text-white">Click or drag & drop emblem image</div>
+                            <div class="small text-muted">Supports PNG, JPG, WEBP, or SVG</div>
+                            <input type="file" name="files" id="uploadBox" accept="image/*" />
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+                        <a asp-controller="Brand" asp-action="Index" class="btn btn-speed-outline">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-speed">
+                            <i class="bi bi-check2-circle"></i> Create Brand
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Preview Column -->
+    <div class="col-lg-5">
+        <div class="glass-card">
+            <div class="card-header">
+                <h5 class="mb-0 text-white fw-bold"><i class="bi bi-eye text-warning me-2"></i> Live Emblem Preview</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="logo-preview-box mb-3" id="previewContainer">
+                    <div id="placeholderText" class="text-muted">
+                        <i class="bi bi-image" style="font-size: 3rem; display: block; margin-bottom: 0.5rem; opacity: 0.4;"></i>
+                        Select an emblem image to preview
+                    </div>
+                    <img id="logoPreview" src="#" alt="Logo Preview" style="display: none;" />
+                </div>
+                <div class="text-muted small text-start">
+                    <div class="fw-bold text-white mb-1"><i class="bi bi-lightbulb text-warning me-1"></i> Best Practices:</div>
+                    <ul class="ps-3 mb-0">
+                        <li>Square or circular emblems look best on high-resolution displays.</li>
+                        <li>Images with transparent backgrounds are automatically framed.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('uploadBox').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const preview = document.getElementById('logoPreview');
+                    const placeholder = document.getElementById('placeholderText');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 }
