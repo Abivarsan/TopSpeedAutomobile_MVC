@@ -45,7 +45,7 @@
                             <div class="brand-thumbnail-wrapper">
                                 @if (!string.IsNullOrEmpty(item.BrandLogo))
                                 {
-                                    <img src="@item.BrandLogo" alt="@item.Name Logo" />
+                                    <img src="@item.BrandLogo" alt="@item.Name Logo" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-brand.svg';" />
                                 }
                                 else
                                 {

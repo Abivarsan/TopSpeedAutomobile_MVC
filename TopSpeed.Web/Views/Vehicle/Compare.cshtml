@@ -61,7 +61,7 @@
                     @if (!string.IsNullOrEmpty(v1.ImageUrl))
                     {
                         <img src="@v1.ImageUrl" alt="@v1.Name" class="w-100 h-100" style="object-fit: cover;" 
-                             onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                             decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-car.svg';" />
                     }
                     else
                     {
@@ -82,7 +82,7 @@
                     @if (!string.IsNullOrEmpty(v2.ImageUrl))
                     {
                         <img src="@v2.ImageUrl" alt="@v2.Name" class="w-100 h-100" style="object-fit: cover;" 
-                             onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                             decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-car.svg';" />
                     }
                     else
                     {

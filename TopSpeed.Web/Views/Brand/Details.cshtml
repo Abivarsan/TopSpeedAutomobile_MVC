@@ -77,7 +77,8 @@
                 <div class="logo-preview-box p-4" style="min-height: 240px;">
                     @if (!string.IsNullOrEmpty(Model.BrandLogo))
                     {
-                        <img src="@Model.BrandLogo" alt="@Model.Name Official Crest" style="max-height: 180px;" />
+                        <img src="@Model.BrandLogo" alt="@Model.Name Official Crest" style="max-height: 180px;" 
+                             decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-brand.svg';" />
                     }
                     else
                     {
@@ -112,7 +113,7 @@
                             @if (!string.IsNullOrEmpty(v.ImageUrl))
                             {
                                 <img src="@v.ImageUrl" alt="@v.Name" class="w-100 h-100" style="object-fit: cover;" 
-                                     onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                                     loading="lazy" decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-car.svg';" />
                             }
                             else
                             {

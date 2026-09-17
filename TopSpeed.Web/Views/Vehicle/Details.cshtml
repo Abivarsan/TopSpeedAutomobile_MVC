@@ -45,7 +45,7 @@
                 @if (!string.IsNullOrEmpty(Model.ImageUrl))
                 {
                     <img src="@Model.ImageUrl" alt="@Model.Name" class="w-100 h-100" style="object-fit: cover; max-height: 440px;" 
-                         onerror="this.src='/images/vehicles/placeholder_car.png'; this.style.objectFit='contain';" />
+                         decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-car.svg';" />
                 }
                 else
                 {
@@ -186,7 +186,7 @@
                             @if (!string.IsNullOrEmpty(s.ImageUrl))
                             {
                                 <img src="@s.ImageUrl" alt="@s.Name" class="w-100 h-100" style="object-fit: cover;" 
-                                     onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                                     loading="lazy" decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-car.svg';" />
                             }
                             else
                             {

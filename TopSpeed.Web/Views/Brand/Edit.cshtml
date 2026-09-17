@@ -114,7 +114,7 @@
                 <div class="logo-preview-box mb-3" id="previewContainer">
                     @if (!string.IsNullOrEmpty(Model.BrandLogo))
                     {
-                        <img id="logoPreview" src="@Model.BrandLogo" alt="@Model.Name Logo" />
+                        <img id="logoPreview" src="@Model.BrandLogo" alt="@Model.Name Logo" onerror="this.onerror=null; this.src='/images/placeholder-brand.svg';" />
                         <div id="placeholderText" class="text-muted" style="display: none;">
                             <i class="bi bi-image" style="font-size: 3rem; display: block; margin-bottom: 0.5rem; opacity: 0.4;"></i>
                             No emblem assigned

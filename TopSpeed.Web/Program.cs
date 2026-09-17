@@ -52,7 +52,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        // Enable 30-day client-side caching for images and static assets to eliminate reload lag
+        const int durationInSeconds = 60 * 60 * 24 * 30;
+        ctx.Context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.CacheControl] =
+            $"public,max-age={durationInSeconds}";
+    }
+});
 
 app.UseRouting();
 

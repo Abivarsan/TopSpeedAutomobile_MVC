@@ -65,7 +65,7 @@
                         @if (!string.IsNullOrEmpty(v.ImageUrl))
                         {
                             <img src="@v.ImageUrl" alt="@v.Name" class="w-100 h-100" style="object-fit: cover;" 
-                                 onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                                 loading="lazy" decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-car.svg';" />
                         }
                         else
                         {

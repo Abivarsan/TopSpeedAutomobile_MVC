@@ -29,7 +29,7 @@
                             @if (!string.IsNullOrEmpty(Model.ImageUrl))
                             {
                                 <img src="@Model.ImageUrl" alt="@Model.Name" class="w-100 h-100" style="object-fit: cover;" 
-                                     onerror="this.src='/images/vehicles/placeholder_car.png';" />
+                                     decoding="async" onerror="this.onerror=null; this.src='/images/placeholder-car.svg';" />
                             }
                             else
                             {
